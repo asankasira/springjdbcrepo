@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+    
+ 	<context:component-scan base-package="com.asanka.jdbc.spring"/>
+ 	
+ 	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+ 		<property name="driverClassName"  value="com.mysql.jdbc.Driver"/>
+ 		<property name="url"  value="jdbc:mysql://localhost/classicmodels"/>
+ 		<property name="username"  value="root"/>
+ 		<property name="password"  value=""/>
+ 	</bean> -->
+ 	
+	<!-- To Support Connection pooling in dataSource commons-dbcp2 artifact is used  -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+ 		<property name="driverClassName"  value="com.mysql.jdbc.Driver"/>
+ 		<property name="url"  value="jdbc:mysql://localhost/classicmodels"/>
+ 		<property name="username"  value="root"/>
+ 		<property name="password"  value=""/>
+ 		<property name="initialSize"  value="2"/>
+ 		<property name="maxTotal"  value="5"/>
+ 	</bean>
+    
+    <bean id="simpleDaoImpl" class="com.asanka.jdbc.spring.daosupport.SimpleJdbcDaoImpl">
+    	<property name="dataSource" ref="dataSource" />
+    </bean>
+    
+	<!--  Integrate Hibernate with Spring -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan"  value="com.asanka.jdbc.spring.model" />
+		<property name="hibernateProperties">
+			<props>
+            	<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+           </props>
+		</property>
+	</bean>
+    
+</beans>
